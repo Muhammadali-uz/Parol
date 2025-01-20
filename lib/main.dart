@@ -1,137 +1,95 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 
 void main() => runApp(MaterialApp(
-      home: listqoshish(),
+      home: API(),
     ));
 
-class listqoshish extends StatefulWidget {
-  const listqoshish({super.key});
+class API extends StatefulWidget {
+  const API({super.key});
 
   @override
-  State<listqoshish> createState() => _listqoshishState();
+  State<API> createState() => _APIState();
 }
 
-class _listqoshishState extends State<listqoshish> {
-  List ln = [];
-  String h = "";
-  String d = "";
-  void f1() {
-    showDialog(
-      context: context,
-      builder: (context) => SimpleDialog(
-        children: [
-          TextField(
-            onChanged: (value) {
-              setState(() {
-                h = value;
-              });
-            },
-          ),
-          Row(
-            children: [
-              TextButton(
-                onPressed: () {
-                  setState(() {
-                    ln.add(h);
-                    Navigator.pop(context);
-                  });
-                },
-                child: Text("OK"),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text("Close"),
-              ),
-            ],
-          )
-        ],
-      ),
-    );
+class _APIState extends State<API> {
+  String region = "";
+  String bomdod = "";
+  String peshin = "";
+  String asr = "";
+  String shom = "";
+  String hufton = "";
+  String haftakuni = "";
+  String sana = "";
+  String oy = "";
+  String kun = "";
+
+  void islom_vaqtlari() async {
+    String api = "https://islomapi.uz/api/present/day?region=Qo%27qon";
+    Response qabul = await get(Uri.parse(api));
+    Map islom_vaqtlari = jsonDecode(qabul.body);
+    setState(() {
+      region = islom_vaqtlari["region"];
+      bomdod = islom_vaqtlari["times"]["tong_saharlik"];
+      peshin = islom_vaqtlari["times"]["peshin"];
+      asr = islom_vaqtlari["times"]["asr"];
+      shom = islom_vaqtlari["times"]["shom_iftor"];
+      hufton = islom_vaqtlari["times"]["shom_iftor"];
+      haftakuni = islom_vaqtlari["weekday"];
+      sana = islom_vaqtlari["date"].toString();
+      oy = islom_vaqtlari["hijri_date"]["month"].toString();
+      kun = islom_vaqtlari["hijri_date"]["day"].toString();
+    });
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    islom_vaqtlari();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
-      body: ListView.builder(
-        itemCount: ln.length,
-        itemBuilder: (context, index) => Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Container(
-            height: 200,
-            decoration: BoxDecoration(
-              color: Colors.red.shade900,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(ln[index]),
-                Row(
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        setState(() {
-                          ln.removeAt(index);
-                        });
-                      },
-                      icon: Icon(Icons.delete_forever),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        showDialog(
-                            context: context,
-                            builder: (context) => SimpleDialog(
-                                  children: [
-                                    TextField(
-                                      onChanged: (value) {
-                                        setState(() {
-                                          d = value;
-                                        });
-                                      },
-                                    ),
-                                    Row(
-                                      children: [
-                                        TextButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                ln[index] = d;
-                                                Navigator.pop(context);
-                                              });
-                                            },
-                                            child: Text("ok")),
-                                        TextButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                Navigator.pop(context);
-                                              });
-                                            },
-                                            child: Text("Back"))
-                                      ],
-                                    )
-                                  ],
-                                ));
-                      },
-                      icon: Icon(Icons.edit),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
+      backgroundColor: Colors.green.shade900,
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        centerTitle: true,
+        title: Text(region,style: texts,),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          f1();
-        },
-        child: Icon(
-          Icons.add,
-          color: Colors.white,
+      drawer: Drawer(
+        backgroundColor: Colors.green,
+       child: ListView(
+        children: [
+          Text(haftakuni,style: texts),
+          Text(sana,style: texts),
+          Text(oy,style: texts),
+          Text(kun,style: texts),
+        ],
+       ),
+      ),
+      
+      
+      body: Padding(
+        padding: EdgeInsets.fromLTRB(8, 20, 8, 200),
+        child: Center(
+          child: Column(
+          
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Text("Bomdod: $bomdod", style: texts),
+              Text("Peshin: $peshin", style: texts),
+              Text("Asr: $asr", style: texts),
+              Text("Shom: $shom", style: texts),
+              Text("Hufton: $hufton", style: texts),
+            ],
+          ),
         ),
       ),
     );
   }
 }
+
+final texts = TextStyle(color: Colors.white, fontSize: 25);
