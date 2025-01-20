@@ -1,163 +1,137 @@
 import 'package:flutter/material.dart';
-import 'LottieAnimation.dart';
 
 void main() => runApp(MaterialApp(
-      home: Fikr(),
+      home: listqoshish(),
     ));
 
-class Fikr extends StatefulWidget {
-  const Fikr({super.key});
+class listqoshish extends StatefulWidget {
+  const listqoshish({super.key});
 
   @override
-  State<Fikr> createState() => _FikrState();
+  State<listqoshish> createState() => _listqoshishState();
 }
 
-class _FikrState extends State<Fikr> {
-  TextEditingController i1 = TextEditingController();
-  TextEditingController i2 = TextEditingController();
-  TextEditingController i3 = TextEditingController();
-  TextEditingController i4 = TextEditingController();
-  String text1 = "";
-  String text2 = "";
-  String text3 = "";
-  String text4 = "";
-
+class _listqoshishState extends State<listqoshish> {
+  List ln = [];
+  String h = "";
+  String d = "";
   void f1() {
-    setState(() {
-      if (i1.text.isEmpty) {
-        text1 = "Parol kiriting!";
-        text2 =
-            "Parol bo`sh bo`lishi mumkin emas. Parol 8ta raqam yoki harflardan tashkil topadi";
-      } else if (i1.text.length < 8) {
-        text2 = "Parol juda qisqa";
-      } else if (i1.text != i2.text) {
-        text1 = "Parol Noto`g`ri";
-      } else if (i3.text.isEmpty) {
-        text3 = "Ism bo`sh bo`lishi mumkin emas!";
-      } else if (i4.text.isEmpty) {
-        text4 = "Email bo`sh bo`lishi mumkin emas";
-      } else {
-        text1 = "Parol To`g`ri";
-        text2 = "To`g`ri";
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => lotties()));
-      }
-    });
+    showDialog(
+      context: context,
+      builder: (context) => SimpleDialog(
+        children: [
+          TextField(
+            onChanged: (value) {
+              setState(() {
+                h = value;
+              });
+            },
+          ),
+          Row(
+            children: [
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    ln.add(h);
+                    Navigator.pop(context);
+                  });
+                },
+                child: Text("OK"),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text("Close"),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue,
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.blue,
-        title: Text(
-          "Sign in",
-          style: TextStyle(
-            color: Colors.white,
+      backgroundColor: Colors.black,
+      body: ListView.builder(
+        itemCount: ln.length,
+        itemBuilder: (context, index) => Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            height: 200,
+            decoration: BoxDecoration(
+              color: Colors.red.shade900,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(ln[index]),
+                Row(
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          ln.removeAt(index);
+                        });
+                      },
+                      icon: Icon(Icons.delete_forever),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) => SimpleDialog(
+                                  children: [
+                                    TextField(
+                                      onChanged: (value) {
+                                        setState(() {
+                                          d = value;
+                                        });
+                                      },
+                                    ),
+                                    Row(
+                                      children: [
+                                        TextButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                ln[index] = d;
+                                                Navigator.pop(context);
+                                              });
+                                            },
+                                            child: Text("ok")),
+                                        TextButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                Navigator.pop(context);
+                                              });
+                                            },
+                                            child: Text("Back"))
+                                      ],
+                                    )
+                                  ],
+                                ));
+                      },
+                      icon: Icon(Icons.edit),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
-      body: Padding(
-        padding: EdgeInsets.fromLTRB(8, 200, 8, 200),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            // TextFields and other UI elements
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: TextField(
-                controller: i3,
-                cursorColor: Colors.white,
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-                decoration: InputDecoration(
-                  helperText: text3,
-                  helperStyle: rang,
-                  hintText: "Name",
-                  hintStyle: TextStyle(color: Colors.white),
-                  border: OutlineInputBorder(),
-                ),
-              ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: TextField(
-                controller: i4,
-                cursorColor: Colors.white,
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-                decoration: InputDecoration(
-                  helperText: text4,
-                  helperStyle: rang,
-                  labelText: "Email",
-                  labelStyle: TextStyle(color: Colors.white),
-                  hintText: "Example@gmail.com",
-                  hintStyle: TextStyle(color: Colors.white),
-                  border: OutlineInputBorder(),
-                ),
-              ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: TextField(
-                cursorColor: Colors.white,
-                style: rang,
-                obscureText: true,
-                controller: i1,
-                decoration: InputDecoration(
-                  helperText: text2,
-                  helperStyle: rang,
-                  hintText: "Password",
-                  hintStyle: TextStyle(color: Colors.white),
-                  border: OutlineInputBorder(),
-                ),
-              ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: TextField(
-                cursorColor: Colors.white,
-                style: rang,
-                obscureText: true,
-                controller: i2,
-                decoration: InputDecoration(
-                  helperText: text1,
-                  helperStyle: rang,
-                  hintText: "Parolni Tasdiqlang",
-                  hintStyle: TextStyle(color: Colors.white),
-                  border: OutlineInputBorder(),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: ElevatedButton(
+      floatingActionButton: FloatingActionButton(
         onPressed: () {
           f1();
         },
-        child: Text("Tasdiqlash"),
+        child: Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
       ),
     );
   }
 }
-
-final rang = TextStyle(color: Colors.white);
