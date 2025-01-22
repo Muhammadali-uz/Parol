@@ -1,9 +1,5 @@
-
-
-
-
-
 import 'package:flutter/material.dart';
+
 void main() {
   runApp(MaterialApp(
     home: search(),
@@ -142,7 +138,9 @@ class _searchState extends State<search> {
         children: [
           //Search TextFieldi
           TextField(
-            onChanged: (qayt) {s(qayt);},
+            onChanged: (qayt) {
+              s(qayt);
+            },
           ),
           //ListView.builder
           Expanded(
