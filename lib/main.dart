@@ -1,93 +1,87 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 void main() => runApp(MaterialApp(
-      home: API(),
+      home: APIqiyin(),
     ));
 
-class API extends StatefulWidget {
-  const API({super.key});
+class APIqiyin extends StatefulWidget {
+  const APIqiyin({super.key});
 
   @override
-  State<API> createState() => _APIState();
+  State<APIqiyin> createState() => _APIqiyinState();
 }
 
-class _APIState extends State<API> {
-
-TextEditingController c1 = TextEditingController();
-  String region = "";
-  String bomdod = "";
-  String peshin = "";
-  String asr = "";
-  String shom = "";
-  String hufton = "";
-  String haftakuni = "";
-  String sana = "";
-  String oy = "";
-  String kun = "";
-
-  void islom_vaqtlari() async {
-    
-    String api = "https://islomapi.uz/api/present/day?region=Qo%27qon";
-    Response qabul = await get(Uri.parse(api));
-    Map islom_vaqtlari = jsonDecode(qabul.body);
-    setState(() {
-      region = islom_vaqtlari["region"];
-      bomdod = islom_vaqtlari["times"]["tong_saharlik"];
-      peshin = islom_vaqtlari["times"]["peshin"];
-      asr = islom_vaqtlari["times"]["asr"];
-      shom = islom_vaqtlari["times"]["shom_iftor"];
-      hufton = islom_vaqtlari["times"]["shom_iftor"];
-      haftakuni = islom_vaqtlari["weekday"];
-      sana = islom_vaqtlari["date"].toString();
-      oy = islom_vaqtlari["hijri_date"]["month"].toString();
-      kun = islom_vaqtlari["hijri_date"]["day"].toString();
-    });
+class _APIqiyinState extends State<APIqiyin> {
+  List dta = [];
+  void funk() async {
+    final response = await http.get(
+        Uri.parse("https://dash.vips.uz/api/20/231/6222"));
+    if (response.statusCode == 200) {
+      final List jsonnom = json.decode(response.body);
+      for (var item in jsonnom) {
+        dta.add(Map.from(item));
+      }
+      setState(() {});
+    } else {
+      throw Exception("Xato");
+    }
   }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    islom_vaqtlari();
-
-
+    funk();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.green.shade900,
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        centerTitle: true,
-        title:Text(region),
-      ),
-      drawer: Drawer(
-        backgroundColor: Colors.green,
-        child: ListView(
-          children: [
-            Text(haftakuni, style: texts),
-            Text(sana, style: texts),
-            Text(oy, style: texts),
-            Text(kun, style: texts),
-          ],
-        ),
-      ),
-      body: Padding(
-        padding: EdgeInsets.fromLTRB(8, 20, 8, 200),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text("Bomdod: $bomdod", style: texts),
-              Text("Peshin: $peshin", style: texts),
-              Text("Asr: $asr", style: texts),
-              Text("Shom: $shom", style: texts),
-              Text("Hufton: $hufton", style: texts),
-            ],
+      body: ListView.builder(
+        itemCount: dta.length,
+        itemBuilder: (context, index) => Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            color: Colors.deepPurple,
+            child: Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        dta[index]["mahsulotnomi"],
+                        style: oq,
+                      ),
+                      Text(
+                        dta[index]["narxi"].toString(),
+                        style: oq,
+                      ),
+                      Text(
+                        dta[index]["exdate"].toString(),
+                        style: oq,
+                      ),
+                      Text(
+                        dta[index]["info"],
+                        style: oq,
+                      ),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      CircleAvatar(
+                        radius: 40,
+                        backgroundImage: NetworkImage(dta[index]["mahsulotrasmi"]),
+                      )
+                    ],
+                  )
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -95,4 +89,7 @@ TextEditingController c1 = TextEditingController();
   }
 }
 
-final texts = TextStyle(color: Colors.white, fontSize: 25);
+final oq = TextStyle(
+  color: Colors.white,
+  fontSize: 15,
+);
