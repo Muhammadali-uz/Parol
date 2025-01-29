@@ -41,6 +41,24 @@ dependencies:
   url_launcher: ^6.3.1
   intl: ^0.20.1
   http: ^1.2.2
+  flutter_launcher_icons: ^0.14.3
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "ssd/burgut.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+  web:
+    generate: true
+    image_path: "ssd/burgut.png"
+    background_color: "#hexcode"
+    theme_color: "#hexcode"
+  windows:
+    generate: true
+    image_path: "ssd/burgut.png"
+    icon_size: 48 # min:48, max:256, default: 48
+  macos:
+    generate: true
+    image_path: "ssd/burgut.png"
 
 dev_dependencies:
   flutter_test:
